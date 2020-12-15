@@ -14,6 +14,8 @@ rule bwa_map:
         rg=r"@RG\tID:{sample}\tSM:{sample}"
     log:
         "logs/bwa_mem/{sample}.log"
+    benchmark:
+        "benchmarks/{sample}.bwa.benchmark.txt"
     threads: 4
     shell:
         "(bwa mem -R '{params.rg}' -t {threads} {input} | "
