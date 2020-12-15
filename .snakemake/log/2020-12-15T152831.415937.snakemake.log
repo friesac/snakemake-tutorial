@@ -1,0 +1,2 @@
+SyntaxError in line 15 of /Users/anthonyfries/Documents/snakemake-tutorial/Snakefile:
+Unexpected keyword logs in rule definition (Snakefile, line 15)

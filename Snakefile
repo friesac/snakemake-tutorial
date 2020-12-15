@@ -9,10 +9,10 @@ rule bwa_map:
         "data/genome.fa",
         lambda wildcards: config["samples"][wildcards.sample]
     output:
-        "mapped_reads/{sample}.bam"
+        temp("mapped_reads/{sample}.bam")
     params:
         rg=r"@RG\tID:{sample}\tSM:{sample}"
-    logs:
+    log:
         "logs/bwa_mem/{sample}.log"
     threads: 4
     shell:
@@ -23,7 +23,7 @@ rule samtools_sort:
     input:
         "mapped_reads/{sample}.bam"
     output:
-        "sorted_reads/{sample}.bam"
+        protected("sorted_reads/{sample}.bam")
     shell:
         "samtools sort -T sorted_reads/{wildcards.sample} "
         "-O bam {input} > {output}"
@@ -43,9 +43,11 @@ rule bcftools_call:
         bai=expand("sorted_reads/{sample}.bam.bai", sample=config["samples"])
     output:
         "calls/all.vcf"
+    log:
+        "logs/bcf_calls/calls_all.log"
     shell:
-        "samtools mpileup -g -f {input.fa} {input.bam} | "
-        "bcftools call -mv - > {output}"
+        "(samtools mpileup -g -f {input.fa} {input.bam} | "
+        "bcftools call -mv - > {output}) 2> {log}"
 
 rule plot_quals:
     input:
