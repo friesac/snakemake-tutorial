@@ -10,8 +10,9 @@ rule bwa_map:
         "data/samples/{sample}.fastq"
     output:
         "mapped_reads/{sample}.bam"
+    threads: 4
     shell:
-        "bwa mem {input} | samtools view -Sb - > {output}"
+        "bwa mem {threads} {input}| samtools view -Sb - > {output}"
 
 rule samtools_sort:
     input:
@@ -47,4 +48,4 @@ rule plot_quals:
     output:
         "plots/quals.svg"
     script:
-        "scripts/plots-quals.py"
+        "scripts/plot-quals.py"
